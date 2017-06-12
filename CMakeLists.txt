@@ -5,14 +5,13 @@ PROJECT(Metaclass)
 SET(
 Metaclass_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/include/Metaclass/BaseGet.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/Metaclass/BaseSet.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/Metaclass/Metabase.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/Metaclass/BaseSet.h    
     ${CMAKE_CURRENT_SOURCE_DIR}/include/Metaclass/Metaclass.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/Metaclass/MetastreamGet.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/Metaclass/MetastreamSet.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/Metaclass/PropertyGet.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/Metaclass/PropertySet.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/Metabase.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Metaclass.cpp
 )
 
 INCLUDE_DIRECTORIES( Metaclass include ) 
@@ -24,6 +23,8 @@ if(METACLASS_SANDBOX)
     Sandbox_SOURCES
         sandbox/main.cpp
     )
+    
+    ADD_DEFINITIONS(-D_CRT_SECURE_NO_DEPRECATE -D_SCL_SECURE_NO_WARNINGS)
 
     INCLUDE_DIRECTORIES( Sandbox ../include )
 
