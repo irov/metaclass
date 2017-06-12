@@ -1,23 +1,33 @@
+cmake_minimum_required(VERSION 3.0)
+
 PROJECT(Metaclass)
 
-MACRO( ADD_FILTER group_name )
-	SOURCE_GROUP( ${group_name} FILES ${ARGN} )
-	SET( SRC_FILES ${SRC_FILES} ${ARGN} )
-ENDMACRO()
-
-ADD_FILTER(
-Metaclass
-    include/Metaclass/BaseGet.h
-    include/Metaclass/BaseSet.h
-    include/Metaclass/Metabase.h
-    include/Metaclass/Metaclass.h
-    include/Metaclass/MetastreamGet.h
-    include/Metaclass/MetastreamSet.h
-    include/Metaclass/PropertyGet.h
-    include/Metaclass/PropertySet.h
-    src/Metabase.cpp
+SET(
+Metaclass_SOURCES
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/Metaclass/BaseGet.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/Metaclass/BaseSet.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/Metaclass/Metabase.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/Metaclass/Metaclass.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/Metaclass/MetastreamGet.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/Metaclass/MetastreamSet.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/Metaclass/PropertyGet.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/Metaclass/PropertySet.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Metabase.cpp
 )
 
-INCLUDE_DIRECTORIES( ${PROJECT_NAME} include ) 
+INCLUDE_DIRECTORIES( Metaclass include ) 
 
-ADD_LIBRARY( ${PROJECT_NAME} STATIC ${SRC_FILES} )
+ADD_LIBRARY( Metaclass STATIC ${Metaclass_SOURCES} )
+
+if(METACLASS_SANDBOX)
+    set(
+    Sandbox_SOURCES
+        sandbox/main.cpp
+    )
+
+    INCLUDE_DIRECTORIES( Sandbox ../include )
+
+    ADD_EXECUTABLE( Sandbox ${Sandbox_SOURCES} )
+
+    TARGET_LINK_LIBRARIES( Sandbox Metaclass )
+endif()
