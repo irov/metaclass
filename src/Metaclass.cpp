@@ -16,7 +16,7 @@ namespace Metaclass
 			it != it_end;
 			++it )
 		{
-			Property & p = it->second;
+			PropertyDesc & p = it->second;
 
 			delete p.getter;
 			delete p.setter;
@@ -32,7 +32,7 @@ namespace Metaclass
 			return false;
 		}
 
-		const Property & p = it_found->second;
+		const PropertyDesc & p = it_found->second;
 
 		p.getter->get( _base, _stream );
 
@@ -48,9 +48,46 @@ namespace Metaclass
 			return false;
 		}
 
-		const Property & p = it_found->second;
+		const PropertyDesc & p = it_found->second;
 
 		p.setter->set( _base, _stream );
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Metaclass::writeClass( const void * _class, MetastreamGet & _stream ) const
+	{
+		_stream << m_name;
+
+		if( m_base != nullptr )
+		{
+			_stream << true;
+
+			m_base->writeClass( _class, _stream );
+		}
+		else
+		{
+			_stream << false;
+		}
+
+		uint32_t properties_size = (uint32_t)m_properties.size();
+
+		_stream << properties_size;
+
+		for( TMapProperties::const_iterator
+			it = m_properties.begin(),
+			it_end = m_properties.end();
+			it != it_end;
+			++it )
+		{
+			const std::string & name = it->first;
+
+			_stream << name;
+
+			const PropertyDesc & p = it->second;
+
+			p.getter->get( _class, _stream );
+		}
 
 		return true;
 	}
@@ -59,15 +96,17 @@ namespace Metaclass
 	{
 		TMapProperties::iterator it_found = m_properties.find( _name );
 
-		if( it_found == m_properties.end() )
+		if( it_found != m_properties.end() )
 		{
 			return false;
 		}
 
-		Property & p = it_found->second;
+		PropertyDesc desc;
 
-		p.getter = _getter;
-		p.setter = _setter;
+		desc.getter = _getter;
+		desc.setter = _setter;
+
+		m_properties.insert( std::make_pair( _name, desc ) );
 
 		return true;
 	}

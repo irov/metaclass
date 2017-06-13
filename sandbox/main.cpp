@@ -21,26 +21,6 @@ protected:
 	float m_b;
 };
 
-void operator << ( Metaclass::MetastreamGet &_stream, int _value )
-{
-	_stream.write( &_value, sizeof( int ) );
-}
-
-void operator << ( Metaclass::MetastreamGet &_stream, float _value )
-{
-	_stream.write( &_value, sizeof( float ) );
-}
-
-void operator >> ( Metaclass::MetastreamSet &_stream, int & _value )
-{
-	_stream.read( &_value, sizeof( int ) );
-}
-
-void operator >> ( Metaclass::MetastreamSet &_stream, float & _value )
-{
-	_stream.read( &_value, sizeof( float ) );
-}
-
 class MyMetastreamGet
 	: public Metaclass::MetastreamGet
 {
@@ -71,21 +51,36 @@ class MyMetastreamSet
 public:
 	MyMetastreamSet( const std::vector<uint8_t> & _data )
 		: m_data( _data )
+		, m_pos( 0 )
 	{}
 
 protected:
 	void read( void * _buff, size_t _size ) override
 	{
 		const uint8_t * data_begin = m_data.data();
-		const uint8_t * data_end = data_begin + _size;
+		const uint8_t * data_pos = data_begin + m_pos;
+		const uint8_t * data_end = data_pos + _size;
 
 		uint8_t * data_dest = static_cast<uint8_t *>(_buff);
 
 		std::copy( data_begin, data_end, data_dest );
+
+		m_pos += _size;
+	}
+
+	const void * skip( size_t _size ) override
+	{
+		const uint8_t * data_begin = m_data.data();
+		const uint8_t * data_pos = data_begin + m_pos;
+
+		m_pos += _size;
+		
+		return data_pos;
 	}
 
 protected:
 	const std::vector<uint8_t> & m_data;
+	uint32_t m_pos;
 
 private:
 	MyMetastreamSet & operator = ( const MyMetastreamSet & );
@@ -94,11 +89,8 @@ private:
 void main()
 {
 	Metaclass::Metaclass metaTest( "Test" );
-	metaTest.addProperty( "a", 0, "lable a", "a - int property!" );
-	metaTest.addProperty( "b", 0.f, "lable b", "b - float property!" );
-
-	metaTest.bindMember<Test>( "a", &Test::getA, &Test::setA );
-	metaTest.bindMember<Test>( "b", &Test::getB, &Test::setB );
+	metaTest.addMember<Test>( "a", &Test::getA, &Test::setA );
+	metaTest.addMember<Test>( "b", &Test::getB, &Test::setB );
 
 	Test * t = new Test;
 
@@ -116,6 +108,9 @@ void main()
 	metaTest.readMember( "a", t, stream_set );
 
 	int a = t->getA();
+
+
+	metaTest.writeClass( t, stream_get );
 
 	printf( "%d", a );
 }

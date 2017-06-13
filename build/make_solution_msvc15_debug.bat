@@ -9,7 +9,7 @@ set "SOLUTION_DIR=solutions\metaclass_msvc15_debug"
 @call vcvarsall_msvc15
 @mkdir %SOLUTION_DIR%
 @pushd %SOLUTION_DIR%
-%CMAKE_EXE% -G "Visual Studio 15 2017" "%CD%\..\.." -DCMAKE_CONFIGURATION_TYPES:STRING='Debug' -DMETACLASS_SANDBOX:BOOL=TRUE
+%CMAKE_EXE% -G "Visual Studio 15 2017" "%CD%\..\.." -DCMAKE_CONFIGURATION_TYPES:STRING='Debug' -DCMAKE_BUILD_TYPE:STRING='Debug' -DMETACLASS_SANDBOX:BOOL=TRUE
 @popd
 
 @echo on

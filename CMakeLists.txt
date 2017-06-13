@@ -2,6 +2,10 @@ cmake_minimum_required(VERSION 3.0)
 
 PROJECT(Metaclass)
 
+SET( CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/build_temp/${ENGINE_LIB_DIR} )
+SET( CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin/metaclass_win32 )
+SET( CMAKE_TEMP_DIR ${CMAKE_CURRENT_SOURCE_DIR}/CMakeTemp/Metaclass_Win32/${CMAKE_GENERATOR}/${CMAKE_BUILD_TYPE} )
+
 SET(
 Metaclass_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/include/Metaclass/BaseGet.h
@@ -11,7 +15,10 @@ Metaclass_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/include/Metaclass/MetastreamSet.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/Metaclass/PropertyGet.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/Metaclass/PropertySet.h
+    
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Metaclass.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/MetastreamGet.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/MetastreamSet.cpp
 )
 
 INCLUDE_DIRECTORIES( Metaclass include ) 
