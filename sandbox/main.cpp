@@ -16,9 +16,13 @@ public:
 	void setB( float b ) { m_b = b; }
 	float getB() const { return m_b; }
 
+    void setC( float c ) { m_c = c; }
+    float getC() const { return m_c; }
+
 protected:
 	int m_a;
 	float m_b;
+    float m_c;
 };
 
 class MyMetastreamGet
@@ -91,26 +95,28 @@ void main()
 	Metaclass::Metaclass metaTest( "Test" );
 	metaTest.addMember<Test>( "a", &Test::getA, &Test::setA );
 	metaTest.addMember<Test>( "b", &Test::getB, &Test::setB );
+    metaTest.addProperty<Test>( "c", []( const Test * _metaclass ){ return _metaclass->getC(); }, []( Test * _metaclass, float value ){ _metaclass->setC( value ); } );
 
 	Test * t = new Test;
 
 	t->setA( 13 );
 	t->setB( 12.f );
+    t->setC( 123.f );
 
 	std::vector<uint8_t> buff;
 
 	MyMetastreamGet stream_get( buff );
-	metaTest.writeMember( "a", t, stream_get );
+	metaTest.writeMember( "c", t, stream_get );
 
-	t->setA( 1 );
+	t->setC( 1.f );
 
 	MyMetastreamSet stream_set( buff );
-	metaTest.readMember( "a", t, stream_set );
+	metaTest.readMember( "c", t, stream_set );
 
-	int a = t->getA();
+	float c = t->getC();
 
 
 	metaTest.writeClass( t, stream_get );
 
-	printf( "%d", a );
+	printf( "%f", c );
 }
