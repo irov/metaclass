@@ -91,6 +91,33 @@ namespace Metaclass
 
 		return true;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    bool Metaclass::mergeClass( const void * _from, void * _to, const Metaclass * _class, MetastreamGet & _get, MetastreamSet & _set ) const
+    {
+        for( TMapProperties::const_iterator
+            it = m_properties.begin(),
+            it_end = m_properties.end();
+            it != it_end;
+            ++it )
+        {
+            const std::string & name = it->first;
+
+            TMapProperties::const_iterator it_found = _class->m_properties.find( name );
+
+            if( it_found == _class->m_properties.end() )
+            {
+                return false;
+            }
+            
+            const PropertyDesc & pget = it->second;
+            pget.getter->get( _from, _get );
+
+            const PropertyDesc & pset = it_found->second;
+            pset.setter->set( _to, _set );            
+        }
+
+        return true;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	bool Metaclass::addGetset( const std::string & _name, BaseGet * _getter, BaseSet * _setter )
 	{

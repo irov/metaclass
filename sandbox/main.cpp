@@ -118,5 +118,5 @@ void main()
 
 	metaTest.writeClass( t, stream_get );
 
-	printf( "%f", c );
+    printf( "%f\n", c );
 }

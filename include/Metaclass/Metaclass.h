@@ -47,6 +47,7 @@ namespace Metaclass
 
 	public:
 		bool writeClass( const void * _base, MetastreamGet & _stream ) const;
+        bool mergeClass( const void * _from, void * _to, const Metaclass * _class, MetastreamGet & _get, MetastreamSet & _set ) const;
 
 	protected:
 		std::string m_name;
